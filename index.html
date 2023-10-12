@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+     <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+ integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+ crossorigin=""></script>
+     <style>
+        #map { height: 600px; 
+                width: 500px;}
+     </style>
+</head>
+<body>
+
+<ion-app>
+<!--SECTOR DE RUTEO-->
+
+<ion-router id="ruteo">
+
+    <ion-route url="/" component="page-home"></ion-route>
+    <ion-route url="/login" component="page-login"></ion-route>
+    <ion-route url="/registro" component="page-registro"></ion-route>
+    <ion-route url="/censar" component="page-censar"></ion-route>
+    <ion-route url="/listar" component="page-listar"></ion-route>
+    <ion-route url="/estadisticas" component="page-estadisticas"></ion-route>
+    <ion-route url="/mapa" component="page-mapa"></ion-route>
+
+
+</ion-router>
+<ion-nav></ion-nav>
+
+
+<!--SECTOR DE MENU-->
+    <ion-menu side="start" content-id="main" id="menu">
+        <ion-header>
+          <ion-toolbar color="danger">
+            <ion-title>Censo 2023</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-item id="btnHome" href="/" onclick="cerrarMenu()"><ion-label>Home</ion-label></ion-item>
+        <ion-item id="btnLogin" href="/login" onclick="cerrarMenu()"><ion-label>Login</ion-label></ion-item>
+        <ion-item id="btnRegistro" href="/registro" onclick="cerrarMenu()"> <ion-label>Registro de Censista</ion-label></ion-item>
+        <ion-item id="btnCensar" href="/censar" onclick="cerrarMenu()"> <ion-label>Censar persona</ion-label></ion-item>
+        <ion-item id="btnListar" href="/listar" onclick="cerrarMenu()">  <ion-label>Listado de personas censadas </ion-label></ion-item>
+        <ion-item id="btnEstadistica" href="/estadisticas" onclick="cerrarMenu()"><ion-label>Información estadística</ion-label></ion-item>
+        <ion-item id="btnMapa" href="/mapa" onclick="cerrarMenu()"><ion-label>Ver Mapa</ion-label></ion-item>
+        <ion-item id="btnLogout" href="/logout" onclick="cerrarMenu()"><ion-label>Cerrar Sesion</ion-label></ion-item>
+
+        <ion-content class="ion-padding">
+        </ion-content>
+      </ion-menu>
+      <div class="ion-page" id="main">
+
+<!--SECTOR DE PAGINAS-->
+     <page-home class="ion-page" id="pantalla-home">
+        <ion-header>
+            <ion-toolbar>
+                <ion-button slot="start">
+                    <ion-menu-button></ion-menu-button>
+                </ion-button>
+              <ion-title>Home</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding">
+            <h1>Bienvenido al Censo</h1>
+        </ion-content>
+     </page-home>
+
+     <page-login class="ion-page" id="pantalla-login">
+        <ion-header>
+            <ion-toolbar>
+                <ion-button slot="start">
+                    <ion-menu-button></ion-menu-button>
+                </ion-button>
+              <ion-title>Login</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding">
+            <ion-item>
+                <ion-input id="txtUsuario" label="Usuario" placeholder="Ingrese el usuario"></ion-input>
+                
+            </ion-item>
+            <ion-item>
+              <ion-input id="txtPassword" label="Password" placeholder="Ingrese el password"></ion-input>
+            </ion-item>
+
+            <ion-button id="btnHacerLogin">Login</ion-button>
+ 
+        </ion-content>
+     </page-login>
+
+
+     <page-registro class="ion-page" id="pantalla-registro">
+      <ion-header>
+          <ion-toolbar>
+              <ion-button slot="start">
+                  <ion-menu-button></ion-menu-button>
+              </ion-button>
+            <ion-title>Registro</ion-title>
+          </ion-toolbar>
+        </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+            <ion-input id="txtNuevoUsuario" label="Usuario" placeholder="Ingrese el nombre del nuevo usuario"></ion-input>            
+        </ion-item>
+        <ion-item>
+          <ion-input id="txtNuevoPassword" label="Password" placeholder="Ingrese el password  del nuevo usuario"></ion-input>
+        </ion-item>
+        <ion-button id="btnRegistrarNuevoUsuario">Registrarse</ion-button>
+    </ion-content>
+   </page-registro>
+
+   <page-censar class="ion-page" id="pantalla-censar">
+    <ion-header>
+      <ion-toolbar>
+        <ion-button slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-button>
+        <ion-title>Censar</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-input id="txtCensarNombre" label="Nombre" placeholder="Ingrese nombre de la persona a censar"></ion-input>
+      </ion-item>
+
+      <ion-list>
+        <ion-item>
+          <ion-select id="slcDepartamento" label="Departamento" placeholder="Seleccione un departamento">
+           
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-select id="slcCiudad" onclick="obtenerCiudades()" label="Ciudad" placeholder="Seleccione una ciudad">
+          
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Fecha de Nacimiento</ion-label>
+          <ion-input id="fechaNac" type="date" [(ngModel)]="fechaNacimiento" placeholder="YY/MM/DD"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-select id="slcOcupacion" onclick="validarEdad()"  label="Ocupación" placeholder="Seleccione una ocupacion">
+          
+          </ion-select>
+        </ion-item>
+      </ion-list>
+      <ion-button id="btnHacerCenso">Censar</ion-button>
+    </ion-content>
+    </page-censar>
+
+    <page-listar class="ion-page" id="pantalla-listar">
+        <ion-header>
+          <ion-toolbar>
+              <ion-button slot="start">
+                  <ion-menu-button></ion-menu-button>
+              </ion-button>
+            <ion-title>Listado</ion-title>
+          </ion-toolbar>
+        </ion-header>
+          <ion-list>
+            <ion-item>
+                <ion-select id="slcListadoOcupacion" placeHolder="filtro" (ionChange)="valorSelectOcupacion($event)" >
+                  <ion-select-option value="0" >Todos</ion-select-option>
+                  <ion-select-option value="1" >Empleado dependiente</ion-select-option>
+                  <ion-select-option value="2" >Empleado independiente</ion-select-option>
+                  <ion-select-option value="3" >Empleado público</ion-select-option>
+                  <ion-select-option value="4" >Comerciante</ion-select-option>
+                  <ion-select-option value="5" >Estudiante</ion-select-option>
+                  <ion-select-option value="7" >Emprendedor</ion-select-option>
+                  <ion-select-option value="8" >No trabaja</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>           
+      <ion-content class="ion-padding" id="listadoPersonas">          
+      </ion-content>
+   </page-listar>
+
+   <page-estadisticas class="ion-page" id="pantalla-estadisticas">
+    <ion-header>
+        <ion-toolbar>
+            <ion-button slot="start">
+                <ion-menu-button></ion-menu-button>
+            </ion-button>
+          <ion-title>Cantidad de censados en Montevideo y el resto del pais</ion-title>
+        </ion-toolbar>
+      </ion-header>        
+        <ion-list>
+          <ion-item>
+            <ion-input id="censadosMontevideo" label="Montevideo:" type="number" placeholder="Censados en montevideo"></ion-input>
+          </ion-item>
+      
+          <ion-item>
+            <ion-input id="censadosRestoPais"  label="Resto del pais:" type="number" placeholder="Censados en el resto del pais"></ion-input>
+          </ion-item>
+        </ion-list>               
+    </page-estadisticas>
+
+    <page-mapa class="ion-page" id="pantalla-mapa">
+      <ion-header>
+        <ion-toolbar>
+                <ion-buttons slot="start">
+                    <ion-menu-button></ion-menu-button>
+                </ion-buttons>
+            <ion-title>Censos cercanos</ion-title>
+        </ion-toolbar>
+        <ion-item>
+            <ion-label position="floating">Ingrese la distancia dentro de la cual desea ver los censos realizados</ion-label>
+            <ion-input type="number" id="txtDistancia"></ion-input>
+
+        </ion-item>
+        <br>
+            <ion-button id="btnFiltrarMapa" color="warning">Mostrar</ion-button>
+          </ion-header>
+          
+          <ion-content class="ion-padding">
+               <div id="map"></div>
+          </ion-content>
+      </page-mapa>
+    
+    <page-logout class="ion-page" id="pantalla-logout">
+      <ion-header>
+          <ion-toolbar>
+              <ion-button slot="start">
+                  <ion-menu-button></ion-menu-button>
+              </ion-button>
+            <ion-title>Logout</ion-title>
+          </ion-toolbar>
+        </ion-header>
+      <ion-content class="ion-padding">
+          <ion-button id="btnHacerLogout">LogOut</ion-button>
+      </ion-content>
+
+   </page-logout>
+
+
+</ion-app>
+    <script src="js/codigo.js"></script>
+</body>
+</html>
